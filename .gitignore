@@ -9,7 +9,7 @@ __pycache__/
 
 #pyenv
 wordle_env
-
+venv
 
 # Distribution / packaging
 .Python
