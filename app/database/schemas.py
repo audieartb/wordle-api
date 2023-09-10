@@ -24,14 +24,11 @@ class UserBase(BaseModel):
     email:str
 
 class UserCreate(UserBase):
-    id: str
     password: str
 
 class User(UserBase):
     id: str
-    stats: Stats = None
+    stats: list[Stats] = []
 
     class Config:
         orm_mode = True
-
-

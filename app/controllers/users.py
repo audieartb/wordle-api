@@ -17,10 +17,17 @@ async def createUser(user: schemas.UserCreate, db: Session):
         print(e)
         return [{"error": "error creating user"}]        
 
-
-async def getUsers():
+async def get_users(db: Session):
     try:
-        return[{"username":"rick"},{"username":"Morty"}]
-    
+        response_model = crud.get_users(db=db)
+        return response_model
+    except Exception as e:
+        print(e)
+        return e
+
+async def get_user_by_id(user_id: str, db:Session):
+    try:
+        response_model = crud.get_user(db=db, user_id=user_id)
+        return response_model
     except:
         return [{"error": "error getting user"}]
