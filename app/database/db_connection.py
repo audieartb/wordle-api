@@ -7,7 +7,7 @@ load_dotenv()
 
 USER = os.getenv('DATABASE_USER')
 PWD = os.getenv('DATABASE_PWD')
-POSTGRESQL_DATABASE_URL = f'postgresql://{USER}:{PWD}@localhost/wordledb'
+POSTGRESQL_DATABASE_URL = f'postgresql://{USER}:{PWD}@64.225.72.2/wordledb'
 
 engine = create_engine(POSTGRESQL_DATABASE_URL)
 
