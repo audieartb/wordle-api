@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-
+import uuid
 class StatsBase(BaseModel):
     streak: int
     solved1 : int 
@@ -14,7 +14,7 @@ class StatsCreate(StatsBase):
 
 class Stats(StatsBase):
     id: int
-    user_id: str
+    user_id: uuid.UUID
 
     class Config:
         orm_mode = True
@@ -27,7 +27,7 @@ class UserCreate(UserBase):
     password: str
 
 class User(UserBase):
-    id: str
+    id: uuid.UUID
     stats: list[Stats] = []
 
     class Config:

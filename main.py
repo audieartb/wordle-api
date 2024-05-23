@@ -14,6 +14,7 @@ app.add_middleware(CORSMiddleware,
                    allow_headers=["*"])
 app.include_router(users.router)
 app.include_router(wordle.router)
+
 @app.get('/api/public')
 async def root():
     return {"message":"Hello"}
@@ -21,5 +22,5 @@ async def root():
 
 #debugging stuff
 
-if __name__ == '__main__':
-    uvicorn.run(app,host='0.0.0.0', post=8000)
+# if __name__ == '__main__':
+#     uvicorn.run(app,host='0.0.0.0', post=8000)

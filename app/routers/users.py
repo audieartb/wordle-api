@@ -6,6 +6,7 @@ from fastapi.security import OAuth2PasswordBearer
 from typing_extensions import Annotated
 from ..database import schemas
 from ..controllers import users as userController
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 router = APIRouter()
 
