@@ -1,13 +1,10 @@
+from datetime import date, datetime
 from pydantic import BaseModel
 
 class StatsBase(BaseModel):
     streak: int
-    solved1 : int 
-    solved2 : int
-    solved3 : int
-    solved4 : int
-    solved5 : int
-    solved6 : int
+    solved_in: int
+    date: datetime
 
 class StatsCreate(StatsBase):
     pass

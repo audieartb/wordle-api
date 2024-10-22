@@ -53,3 +53,10 @@ def create_stats(db:Session, stats: schemas.Stats,user_id : str):
     db.commit()
     db.refresh(db_stats)
     return db_stats
+
+def update_stats(db:Session, stats: schemas.Stats, user_id: str):
+    pass
+
+def get_stats(db: Session, id: str):
+    db_stats =  db.query(models.Stats).filter(models.Stats.user_id == id).first()
+    return db_stats

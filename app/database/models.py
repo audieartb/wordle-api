@@ -16,13 +16,14 @@ class Stats(Base):
     __tablename__ = 'stats'
 
     id = Column(Integer, primary_key=True, index=True)
-    streak = Column(Integer)
-    solved1 = Column(Integer) 
-    solved2 = Column(Integer)
-    solved3 = Column(Integer)
-    solved4 = Column(Integer)
-    solved5 = Column(Integer)
-    solved6 = Column(Integer)
+    streak = Column(Integer, default=0)
+    solved1 = Column(Integer, default=0) 
+    solved2 = Column(Integer, default=0)
+    solved3 = Column(Integer, default=0)
+    solved4 = Column(Integer, default=0)
+    solved5 = Column(Integer, default=0)
+    solved6 = Column(Integer, default=0)
+    last_updated = Column(Date)
     user_id = Column(String, ForeignKey("users.id"))
 
     user = relationship("User", back_populates="stats")
