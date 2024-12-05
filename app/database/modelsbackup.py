@@ -1,9 +1,7 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Date
 from sqlalchemy.orm import relationship
-from sqlalchemy.ext.declarative import declarative_base
 
-Base = declarative_base()
-metadata = Base.metadata
+from .db_connection import Base, engine
 
 class User(Base):
     __tablename__ = "users"
@@ -26,7 +24,6 @@ class Stats(Base):
     solved5 = Column(Integer, default=0)
     solved6 = Column(Integer, default=0)
     last_updated = Column(Date)
-    total_games = Column(Integer, default=0)
     user_id = Column(String, ForeignKey("users.id"))
 
     user = relationship("User", back_populates="stats")
@@ -37,3 +34,5 @@ class Words(Base):
     id = Column(Integer, primary_key=True,unique=True)
     word = Column(String)
     date = Column(Date)
+
+Base.metadata.create_all(engine)

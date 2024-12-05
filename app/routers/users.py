@@ -32,7 +32,7 @@ async def get_users(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail=error)
 
 
-#what is the purpose of this, get user statistics?, goes to get user by email/id
+#what is the purpose of this, get user statistics?, gets user by email/id
 @router.get("/api/users/{user_id}", tags=['users'], response_model=schemas.User)
 async def get_user_by_id(user_id: str, db: Session = Depends(get_db)):
     """return user matching the id"""
