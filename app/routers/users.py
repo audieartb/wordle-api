@@ -33,12 +33,11 @@ def get_db():
 
 # GET ONE USER BY ID
 @router.get("/api/user/{user_id}", tags=['users'], response_model=schemas.User)
-async def get_user_by_id(user_id: str,
-                         current_user: str = Annotated[schemas.UserBase, Depends(
-                             utils.get_current_user)],
+async def get_user_by_id(user_id: str, 
+                         current_user: Annotated[schemas.UserBase, Depends(utils.get_current_user)], 
                          db: Session = Depends(get_db)):
     """return user matching the id"""
-    user = await userController.get_user_by_email(user_id=current_user, db=db)
+    user = await userController.get_user_by_email(user_id=user_id, db=db)
     return user
 
 

@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from app.routers import users, wordle
 from fastapi.middleware.cors import CORSMiddleware
+
+
 import uvicorn
 app = FastAPI()
 
@@ -18,6 +20,7 @@ app.include_router(wordle.router)
 @app.get('/api/public')
 async def root():
     return {"message":"Hello"}
+
 
 
 #debugging stuff

@@ -6,8 +6,6 @@ from datetime import datetime, timedelta
 import json
 
 # for signing up
-
-
 async def create_user(user: schemas.UserCreate, db: Session):
     """creates user in db"""
     try:
@@ -20,7 +18,6 @@ async def create_user(user: schemas.UserCreate, db: Session):
             data={"sub": user.email}, expires_delta=expire_delta)
         return token
     except Exception as error:
-        print(error)
         return [{"Sign-up Error": error}]
 
 
@@ -37,20 +34,13 @@ async def login(user: schemas.UserCreate, db: Session):
     except Exception as error:
         return [{"Login Error": error}]
 
-# should not be used
-
-
 async def get_users(db: Session):
     """gets all users in db"""
     try:
         response_model = crud.get_users(db=db)
         return response_model
     except Exception as error:
-        print(error)
         return error
-
-# shoudl return user data and statistics
-
 
 async def get_user_by_email(email: str, db: Session):
     """finds user matching email"""
@@ -59,9 +49,6 @@ async def get_user_by_email(email: str, db: Session):
         return user
     except Exception as error:
         return error
-
-# probably delete it and leave get user by email
-
 
 async def get_user_by_id(user_id: str, db: Session):
     """gets user matching id"""
@@ -77,11 +64,9 @@ async def get_user_by_id(user_id: str, db: Session):
 # resets streak if difference in days is more than 1
 async def update_stats(stats: schemas.StatsUpdate, db: Session):
     try:
-        print("in controller")
         # get stored stats if any
         db_stats = crud.update_stats(stats=stats, db=db)
         if not db_stats:
-            print("no stats for this user")
             return
         # checks last updated to check streak
         return db_stats
