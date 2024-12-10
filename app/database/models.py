@@ -1,13 +1,14 @@
 from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Date
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
-
+from sqlalchemy.dialects.postgresql import UUID
+import uuid
 Base = declarative_base()
 metadata = Base.metadata
 
 class User(Base):
     __tablename__ = "users"
-    id = Column(String, primary_key=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, index=True, default=uuid.uuid4)
     user = Column(String)
     email = Column(String, unique=True,index=True)
     hashed_password = Column(String)
@@ -27,7 +28,7 @@ class Stats(Base):
     solved6 = Column(Integer, default=0)
     last_updated = Column(Date)
     total_games = Column(Integer, default=0)
-    user_id = Column(String, ForeignKey("users.id"))
+    user_id = Column(UUID, ForeignKey("users.id"))
 
     user = relationship("User", back_populates="stats")
 

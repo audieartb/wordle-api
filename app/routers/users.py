@@ -2,7 +2,7 @@ from typing import List
 from sqlalchemy.orm import Session
 from ..database.db_connection import SessionLocal
 from fastapi import APIRouter, Depends, HTTPException
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from typing_extensions import Annotated
 from ..database import schemas
 from ..controllers import users as userController
@@ -20,28 +20,45 @@ def get_db():
         db.close()
 
 
-#not really necessary
-@router.get("/api/users", tags=['users'], response_model=List[schemas.User])
-async def get_users(db: Session = Depends(get_db)):
-    """gets all users in database"""
-    try:
-        users = await userController.get_users(db=db)
-        return users
-    except Exception as error:
-        print(error)
-        raise HTTPException(status_code=500, detail=error)
+# ALL USERS FOR ADMIN ENDPOINT - NOT IN USE
+# @router.get("/api/users", tags=['users'], response_model=List[schemas.User])
+# async def get_users(db: Session = Depends(get_db)):
+#     """gets all users in database"""
+#     try:
+#         users = await userController.get_users(db=db)
+#         return users
+#     except Exception as error:
+#         print(error)
+#         raise HTTPException(status_code=500, detail=error)
 
-
-#what is the purpose of this, get user statistics?, gets user by email/id
-@router.get("/api/users/{user_id}", tags=['users'], response_model=schemas.User)
-async def get_user_by_id(user_id: str, db: Session = Depends(get_db)):
+# GET ONE USER BY ID
+@router.get("/api/user/{user_id}", tags=['users'], response_model=schemas.User)
+async def get_user_by_id(user_id: str,
+                         current_user: str = Annotated[schemas.UserBase, Depends(
+                             utils.get_current_user)],
+                         db: Session = Depends(get_db)):
     """return user matching the id"""
-    user = await userController.get_user_by_id(user_id=user_id, db=db)
+    user = await userController.get_user_by_email(user_id=current_user, db=db)
     return user
 
-#change to sign up?, should go to controller > create user
-@router.post("/api/users", response_model=schemas.User, tags=['users'])
-async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
+
+###### IMPORTANT - LOGIN#########
+@router.post('/token', tags=['auth'])
+async def login(form_data: Annotated[OAuth2PasswordRequestForm, Depends()], db: Session = Depends(get_db)):
+    """Log in for existing users"""
+    user_dict = await userController.get_user_by_email(form_data.username, db=db)
+    user = schemas.UserCreate(
+        user='', email=form_data.username, password=form_data.password)
+    if not user_dict:
+        raise HTTPException(
+            status_code=400, detail="Incorrect username or password")
+    login_response = await userController.login(user=user, db=db)
+    return login_response
+
+
+# change to sign up?, should go to controller > CREATE USER WORKS
+@router.post("/api/users/signup", tags=['users'])
+async def sign_up(user: schemas.UserCreate, db: Session = Depends(get_db)):
     """creates a new user"""
     user_exists = await userController.get_user_by_email(email=user.email, db=db)
     if user_exists:
@@ -50,15 +67,14 @@ async def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     return response
 
 
-#will work as log in
-@router.get("/api/private")
-async def token_test(token: Annotated[str, Depends(oauth2_scheme)]):
-    """test for token authenticated url"""
-    return {"token": token}
-
-@router.get("/user/save")
-async def save_game(stats: schemas.Stats, db: Session = Depends(get_db)):
-    user_exists = await userController.get_user_by_id(email=stats.id)
-    if user_exists:
-        userController.save_game(stats=stats)
-    return True
+# UPDATE AFTER EVERY GAME
+@router.put("/api/users", response_model=schemas.StatsBase, tags=['users'])
+async def update_score(score: schemas.StatsUpdate,
+                       current_user: Annotated[schemas.UserBase, Depends(utils.get_current_user)],
+                       db: Session = Depends(get_db)):
+    """updates the stats of an existing user"""
+    user_exists = await userController.get_user_by_email(email=current_user, db=db)
+    if not user_exists:
+        raise HTTPException(status_code=400, detail='Invalid user')
+    new_stats = await userController.update_stats(stats=score, db=db)
+    return new_stats

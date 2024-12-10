@@ -15,7 +15,6 @@ con_string = f'postgresql+psycopg2://{USER}:{PWD}@{DB_HOST}/wordledb'
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
-print(con_string)
 config.set_main_option("sqlalchemy.url", con_string)
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

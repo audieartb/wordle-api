@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from pydantic import BaseModel
+from pydantic import BaseModel, UUID4
 from typing import Optional, List
 
 
@@ -13,24 +13,23 @@ class StatsBase(BaseModel):
     solved4 = int
     solved5 = int
     solved6 = int
-    last_updated: datetime
+    last_updated: date
     total_games = int
-    user_id: str
+    user_id: UUID4
     
     class Config:
         orm_mode = True
 
 class StatsUpdate(BaseModel):
-    id: Optional[int] = None
     success: bool
     attempts: int
-    user_id: int
+    user_id: UUID4
     user_email: str
     date: datetime
 
 
 class UserBase(BaseModel):
-    user: str
+    user: Optional[str] 
     email:str
 
 class UserCreate(UserBase):
@@ -38,7 +37,7 @@ class UserCreate(UserBase):
 
 
 class User(UserBase):
-    id: str
+    id: UUID4
     stats: List[StatsBase]
 
     class Config:

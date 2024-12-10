@@ -14,6 +14,7 @@ app.add_middleware(CORSMiddleware,
                    allow_headers=["*"])
 app.include_router(users.router)
 app.include_router(wordle.router)
+
 @app.get('/api/public')
 async def root():
     return {"message":"Hello"}
